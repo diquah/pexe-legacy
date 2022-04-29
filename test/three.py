@@ -1,1 +1,0 @@
-print('from a file.')
