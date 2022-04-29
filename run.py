@@ -2,7 +2,7 @@ import sys
 import zlib
 import json
 import tempfile
-from pprint import pp
+
 
 def run(target):
     with open(target, 'rb') as f:

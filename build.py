@@ -2,6 +2,7 @@ import os
 import zlib
 import json
 
+
 def build(target):
     MAIN = None
     FILES = list()
@@ -19,11 +20,13 @@ def build(target):
     DATA = {}
     DATA['main'] = MAIN
     DATA['files'] = {}
+    DATA['libs'] = {}
 
     for file in FILES:
-        if file.endswith('.py'):
-            with open(DIR + '\\' + file, 'r') as f:
-                DATA['files'][file] = f.read()
+        if os.path.isfile(DIR + '\\' + file):
+            if not file.endswith('.pexe'):
+                with open(DIR + '\\' + file, 'r') as f:
+                    DATA['files'][file] = f.read()
 
     BUILD_FILE_PATH = DIR + '\\application.pexe'
 
