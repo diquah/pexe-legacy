@@ -3,9 +3,10 @@ import zlib
 import json
 import shutil
 import base64
+import re
 
 
-def build(target):
+def build(target, args):
     MAIN = None
     FILES = list()
     DIR = None
@@ -15,9 +16,36 @@ def build(target):
         FILES = os.listdir('\\'.join(target.split('\\')[0:-1]))
         DIR = '\\'.join(target.split('\\')[0:-1])
     else:
-        FILES = os.listdir(target)
-        MAIN = FILES[FILES.index('main.py')]
-        DIR = target
+        try:
+            FILES = os.listdir(target)
+            MAIN = FILES[FILES.index('main.py')]
+            DIR = target
+        except ValueError:
+            print("'main.py' could not be found.")
+            return None
+
+    if args['include']:
+        new_files = []
+        for include in args['include'][0]:
+            try:
+                valid = re.compile(include)
+                for file in FILES:
+                    if valid.fullmatch(file) and file not in new_files:
+                        new_files.append(file)
+            except re.error:
+                if include in FILES and include not in new_files:
+                    new_files.append(include)
+        FILES = new_files
+    else:
+        new_files = []
+        for file in FILES:
+            if not file.endswith('.pexe'):
+                new_files.append(file)
+        FILES = new_files
+
+    if MAIN not in FILES:
+        print('Main file is not in list of files. Check your includes.')
+        return None
 
     DATA = {}
     DATA['main'] = MAIN
@@ -27,9 +55,8 @@ def build(target):
     for file in FILES:
         file_dir = DIR + '\\' + file
         if os.path.isfile(file_dir):
-            if not file.endswith('.pexe'):
-                with open(file_dir, 'rb') as f:
-                    DATA['files'][file] = base64.b64encode(f.read()).decode()
+            with open(file_dir, 'rb') as f:
+                DATA['files'][file] = base64.b64encode(f.read()).decode()
         elif os.path.isdir(file_dir):
             shutil.make_archive(DIR + '\\temp_archive', 'tar', root_dir=file_dir)
             with open(DIR + '\\temp_archive.tar', 'rb') as f:
