@@ -8,3 +8,25 @@
  * You are trying to create a standalone executable.
  * Pexe is not on your client machine.
  * Python is not installed on your client machine.
+
+### How to use:
+In the command line:
+
+`pexe.py <target> <args>`
+
+**\<target>** A file or a directory.
+
+In Build Mode:
+> If a .py file is specified it will be executed upon unpacking, i.e. your "main.py" file.  If a directory is specified it will automatically look for "main.py". If "main.py" is not found, the program will error.
+
+In Run Mode:
+> A .pexe file.
+
+
+**\<args>** Arguments.
+* `-b`: Build mode.
+* `-r`: Run mode.
+
+If both build and run modes are specified, the target should be as specified for build mode.
+
+If no modes are specified, run mode is default.
