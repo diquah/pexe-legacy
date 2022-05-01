@@ -8,11 +8,17 @@ parser.add_argument('-i', '--include', action='append', nargs='*')
 parser.add_argument('-l', '--lib', action='append', nargs='*')
 
 parser.add_argument('-r', '--run', action='store_true')
+parser.add_argument('-a', '--args', action='append', nargs='*')
+
 parser.add_argument('target')
 
 args = vars(parser.parse_args())
+
 if not args['run'] and not args['build']:
     args['run'] = True
+
+if args['args'] is None:
+    args['args'] = []
 
 target = args['target']
 BUILD_FILE_PATH = None
@@ -27,5 +33,7 @@ if args['build']:
 if args['run']:
     if args['build']:
         target = BUILD_FILE_PATH
+    args['args'].insert(0, [target])
+
     if target.endswith('.pexe'):
-        run(target)
+        run(target, args)

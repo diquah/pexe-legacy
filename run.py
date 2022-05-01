@@ -8,7 +8,7 @@ import base64
 import pathlib
 
 
-def run(target):
+def run(target, args):
     target_dir = (pathlib.Path(target).parent.absolute())
 
     with open(target, 'rb') as f:
@@ -42,5 +42,12 @@ def run(target):
 
 
         with open(temp_dir + '\\' + DATA['main'], 'r') as f:
-            sys.path.append(temp_dir)
+            new_path = []
+            for p in sys.path:
+                if not p.lower().find('pexe'):
+                    new_path.append(p)
+            sys.path = new_path
+
+            sys.argv = [item for sublist in args['args'] for item in sublist]
+
             exec(f.read())
