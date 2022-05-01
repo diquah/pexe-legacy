@@ -40,7 +40,6 @@ def run(target):
                                               format='tar')
                         os.remove(temp_dir + '\\temp.tar')
 
-        input()
 
         with open(temp_dir + '\\' + DATA['main'], 'r') as f:
             sys.path.append(temp_dir)
