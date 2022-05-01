@@ -28,7 +28,7 @@ A .pexe file.
 **\<args>** - Arguments.
 * `-b` `--build`: Build mode.
 * `-i` `--include`: Specify files or regex include in executable. By default, all files and folders in the directory are included besides .pexe files.
-* `-l` `--lib`: Specify files or regex to put in a linked library instead of the executable.
+* `-l` `--lib`: Specify files or regex to put in a linked library instead of the executable. Create multiple linked libraries by using the argument again: `-l a.py -l b.py c.py`
 
 
 * `-r` `--run`: Run mode.
