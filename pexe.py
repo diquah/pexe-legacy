@@ -4,6 +4,9 @@ from run import run
 
 parser = argparse.ArgumentParser()
 parser.add_argument('-b', '--build', action='store_true')
+parser.add_argument('-i', '--include', action='append', nargs='*')
+parser.add_argument('-l', '--lib', action='append', nargs='*')
+
 parser.add_argument('-r', '--run', action='store_true')
 parser.add_argument('target')
 
@@ -15,8 +18,11 @@ target = args['target']
 BUILD_FILE_PATH = None
 
 if args['build']:
-    BUILD_FILE_PATH = build(target)
-    print('BUILD SUCCESSFUL!')
+    BUILD_FILE_PATH = build(target, args)
+    if BUILD_FILE_PATH:
+        print('BUILD SUCCESSFUL!')
+    else:
+        quit(100)
 
 if args['run']:
     if args['build']:
