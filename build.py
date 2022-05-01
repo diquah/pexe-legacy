@@ -9,6 +9,7 @@ import re
 def build(target, args):
     MAIN = None
     FILES = list()
+    LIBS = list()
     DIR = None
 
     if target.endswith('.py'):
@@ -25,8 +26,9 @@ def build(target, args):
             return None
 
     if args['include']:
+        includes = sum(args['include'], [])
         new_files = []
-        for include in args['include'][0]:
+        for include in includes:
             try:
                 valid = re.compile(include)
                 for file in FILES:
@@ -39,18 +41,24 @@ def build(target, args):
     else:
         new_files = []
         for file in FILES:
-            if not file.endswith('.pexe'):
+            if not file.endswith('.pexe') and file != 'bin':
                 new_files.append(file)
         FILES = new_files
+
 
     if MAIN not in FILES:
         print('Main file is not in list of files. Check your includes.')
         return None
 
+    if not os.path.exists(DIR + '\\bin'):
+        os.mkdir(DIR + '\\bin')
+
+    BUILD_FILE_PATH = DIR + '\\bin'
+
     DATA = {}
     DATA['main'] = MAIN
     DATA['files'] = {}
-    DATA['libs'] = {}
+    DATA['folders'] = {}
 
     for file in FILES:
         file_dir = DIR + '\\' + file
@@ -60,13 +68,32 @@ def build(target, args):
         elif os.path.isdir(file_dir):
             shutil.make_archive(DIR + '\\temp_archive', 'tar', root_dir=file_dir)
             with open(DIR + '\\temp_archive.tar', 'rb') as f:
-                DATA['libs'][file] = base64.b64encode(f.read()).decode()
+                DATA['folders'][file] = base64.b64encode(f.read()).decode()
             os.remove(DIR + '\\temp_archive.tar')
 
-    BUILD_FILE_PATH = DIR + '\\application.pexe'
+    if args['lib']:
+        for lib in args['lib']:
+            lib_data = {}
+            lib_data['files'] = {}
+            lib_data['folders'] = {}
 
-    with open(BUILD_FILE_PATH, 'wb') as f:
+            for file in lib:
+                file_dir = DIR + '\\' + file
+                if os.path.isfile(file_dir):
+                    with open(DIR + '\\' + file, 'rb') as f:
+                        lib_data['files'][file] = base64.b64encode(f.read()).decode()
+                elif os.path.isdir(file_dir):
+                    shutil.make_archive(DIR + '\\temp_archive', 'tar', root_dir=file_dir)
+                    with open(DIR + '\\temp_archive.tar', 'rb') as f:
+                        lib_data['folders'][file] = base64.b64encode(f.read()).decode()
+                    os.remove(DIR + '\\temp_archive.tar')
+
+            with open(BUILD_FILE_PATH + '\\' + '&'.join(lib) + '.pll', 'wb') as f:
+                json_data = json.dumps(lib_data)
+                f.write(zlib.compress(json_data.encode()))
+
+    with open(BUILD_FILE_PATH + '\\application.pexe', 'wb') as f:
         json_data = json.dumps(DATA)
         f.write(zlib.compress(json_data.encode()))
 
-    return BUILD_FILE_PATH
+    return BUILD_FILE_PATH + '\\application.pexe'

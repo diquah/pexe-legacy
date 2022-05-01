@@ -5,6 +5,8 @@ from run import run
 parser = argparse.ArgumentParser()
 parser.add_argument('-b', '--build', action='store_true')
 parser.add_argument('-i', '--include', action='append', nargs='*')
+parser.add_argument('-l', '--lib', action='append', nargs='*')
+
 parser.add_argument('-r', '--run', action='store_true')
 parser.add_argument('target')
 
