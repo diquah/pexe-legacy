@@ -32,7 +32,7 @@ A .pexe file.
 
 
 * `-r` `--run`: Run mode.
-* `-a` `--args`: Specify list of arguments to pass to .pexe: `pexe.py applicaton.pexe -r <arguments>`
+* `-a` `--args`: Specify list of arguments to pass to .pexe: `pexe.py applicaton.pexe -r -a <arguments>`
 
 If both build and run modes are used, the target should be as specified for build mode.
 
