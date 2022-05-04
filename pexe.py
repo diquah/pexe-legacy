@@ -1,6 +1,10 @@
+import logging
 import argparse
 from build import build
 from run import run
+
+PEXE_VERSION = '0.1.0'
+logging.basicConfig(format='%(levelname)s: %(message)s')
 
 parser = argparse.ArgumentParser()
 parser.add_argument('-b', '--build', action='store_true')
@@ -13,6 +17,7 @@ parser.add_argument('-a', '--args', action='append', nargs='*')
 parser.add_argument('target')
 
 args = vars(parser.parse_args())
+args['version'] = PEXE_VERSION
 
 if not args['run'] and not args['build']:
     args['run'] = True

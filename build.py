@@ -3,6 +3,7 @@ import zlib
 import json
 import shutil
 import base64
+import logging
 import re
 
 
@@ -22,7 +23,7 @@ def build(target, args):
             MAIN = FILES[FILES.index('main.py')]
             DIR = target
         except ValueError:
-            print("'main.py' could not be found.")
+            logging.error("'main.py' could not be found.")
             return None
 
     if args['include']:
@@ -47,7 +48,7 @@ def build(target, args):
 
 
     if MAIN not in FILES:
-        print('Main file is not in list of files. Check your includes.')
+        logging.error('Main file is not in list of files. Check your includes.')
         return None
 
     if not os.path.exists(DIR + '\\bin'):
@@ -56,6 +57,7 @@ def build(target, args):
     BUILD_FILE_PATH = DIR + '\\bin'
 
     DATA = {}
+    DATA['version'] = args['version']
     DATA['main'] = MAIN
     DATA['files'] = {}
     DATA['folders'] = {}
@@ -74,6 +76,7 @@ def build(target, args):
     if args['lib']:
         for lib in args['lib']:
             lib_data = {}
+            lib_data['version'] = args['version']
             lib_data['files'] = {}
             lib_data['folders'] = {}
 

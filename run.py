@@ -6,15 +6,20 @@ import tempfile
 import shutil
 import base64
 import pathlib
+import logging
 
 
 def run(target, args):
     target_dir = (pathlib.Path(target).parent.absolute())
+    target_name = target.split('\\')[-1]
 
     with open(target, 'rb') as f:
         raw_data = f.read()
 
     DATA = json.loads(zlib.decompress(raw_data))
+
+    if DATA['version'] != args['version']:
+        logging.warning(f'{target_name} was made with pexe {DATA["version"]} (running with {args["version"]})')
 
     with tempfile.TemporaryDirectory() as temp_dir:
         for name, content in DATA['files'].items():
@@ -30,6 +35,9 @@ def run(target, args):
             if file.endswith('.pll'):
                 with open(str(target_dir) + '\\' + file, 'rb') as lib:
                     lib_data = json.loads(zlib.decompress(lib.read()))
+                    if lib_data['version'] != args['version']:
+                        logging.warning(f'{target_name} was made with pexe {DATA["version"]} (running with {args["version"]})')
+
                     for name, content in lib_data['files'].items():
                         with open(temp_dir + '\\' + name, 'w') as f:
                             f.write(base64.b64decode(content).decode())
