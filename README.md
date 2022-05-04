@@ -1,6 +1,6 @@
 # pexe
 
-![](https://img.shields.io/badge/license-GPLv3-blue) ![](https://img.shields.io/badge/python-3-blue)
+![](https://img.shields.io/badge/license-GPLv3-blue) ![](https://img.shields.io/badge/python-3-blue) ![GitHub release (latest by date)](https://img.shields.io/github/v/release/diquah/pexe)
  
 Pexe is a way of packing a python project directory into a single file that feels like an executable (.exe) while still being python code.
  
